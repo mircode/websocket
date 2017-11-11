@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket文件上传</title>
+    <meta charset="utf-8">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+		$(function(){
+			var ws=new WebSocket('ws://localhost:8080/upload');
+	        ws.onopen=function() {
+	        	console.info('connect success...');
+	        }
+	        ws.onmessage=function(e) {
+	        	console.info('receive msg:'+e.data);
+	        }
+	        ws.onclose=function() {
+	        	console.info('close success...');
+	        }
+	        
+			$("#upload").click(function() {
+				 var target=document.getElementById("file");
+				 var reader=new FileReader();
+				 reader.readAsArrayBuffer(target.files[0]);
+				 reader.onload=function loaded(evt) {
+			         var data = evt.target.result;
+			         ws.send(data);
+				 }
+		     });
+		});
+    </script>
+</head>
+<body>
+	<input id="file"  type="file"/>
+	<input id="upload" type="button"value="上传" />
+</body>
+</html>
